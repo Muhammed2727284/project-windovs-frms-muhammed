@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using Muhammed.Models;
 using Muhammed.Services;
+using Muhammed.UI;
 
 namespace Muhammed.Forms
 {
@@ -14,11 +15,32 @@ namespace Muhammed.Forms
         {
             InitializeComponent();
 
+            // Единое оформление: цвета и шрифты берутся из класса Theme
+            Theme.ApplyToForm(this);
+            Theme.StyleMuted(lblNote);
+            lblRevenue.ForeColor = Theme.Accent;
+            lblRevenue.Font = Theme.TileFont; // выручку выделяем крупнее
+
             // По умолчанию показываем отчёт за сегодня.
             // Сначала ставим дату, потом явно строим отчёт
             // (если дата и так сегодняшняя, событие ValueChanged не сработает).
             dtpDate.Value = DateTime.Today;
             ShowReport();
+        }
+
+        /// <summary>
+        /// Защита: отчёт по выручке доступен только администратору,
+        /// даже если окно откроют не из админ-панели.
+        /// </summary>
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Отчёт по выручке доступен только администратору.", "Нет доступа",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Close();
+            }
         }
 
         /// <summary>При смене даты пересчитываем отчёт.</summary>

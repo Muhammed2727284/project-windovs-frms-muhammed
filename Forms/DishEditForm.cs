@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using Muhammed.Models;
 using Muhammed.Services;
+using Muhammed.UI;
 
 namespace Muhammed.Forms
 {
@@ -26,6 +27,11 @@ namespace Muhammed.Forms
         {
             InitializeComponent();
             editingDish = dish;
+
+            // Единое оформление: цвета и шрифты берутся из класса Theme
+            Theme.ApplyToForm(this);
+            Theme.StylePrimaryButton(btnSave);
+            Theme.SetIcon(btnSave, Theme.IconCheck);
 
             // В список категорий кладём все категории, которые уже есть в меню.
             // Можно выбрать готовую или вписать новую.

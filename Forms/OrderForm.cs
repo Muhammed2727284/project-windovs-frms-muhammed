@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Muhammed.Models;
 using Muhammed.Services;
+using Muhammed.UI;
 
 namespace Muhammed.Forms
 {
@@ -26,6 +27,16 @@ namespace Muhammed.Forms
         {
             InitializeComponent();
             editingOrder = order;
+
+            // Единое оформление: цвета и шрифты берутся из класса Theme
+            Theme.ApplyToForm(this);
+            Theme.StylePrimaryButton(btnSaveOrder);
+            Theme.StylePrimaryButton(btnAddItem);
+            Theme.SetIcon(btnAddItem, Theme.IconAdd);
+            Theme.SetIcon(btnSaveOrder, Theme.IconCheck);
+            Theme.SetIcon(btnRemoveItem, Theme.IconDelete);
+            Theme.StyleMuted(lblHint);
+            lblTotal.ForeColor = Theme.Accent;
 
             // Заполняем выпадающий список блюдами из меню
             foreach (Dish dish in DataService.Dishes)

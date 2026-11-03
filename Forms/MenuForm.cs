@@ -3,17 +3,27 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Muhammed.Models;
 using Muhammed.Services;
+using Muhammed.UI;
 
 namespace Muhammed.Forms
 {
     /// <summary>
-    /// Окно «Меню кафе»: список блюд, добавление, изменение и удаление.
+    /// Окно «Блюда» (админ-панель): список блюд, добавление, изменение и удаление.
     /// </summary>
     public partial class MenuForm : Form
     {
         public MenuForm()
         {
             InitializeComponent();
+
+            // Единое оформление: цвета и шрифты берутся из класса Theme
+            Theme.ApplyToForm(this);
+            Theme.StylePrimaryButton(btnAdd);
+            Theme.SetIcon(btnAdd, Theme.IconAdd);
+            Theme.SetIcon(btnEdit, Theme.IconEdit);
+            Theme.StyleDangerButton(btnDelete);
+            Theme.SetIcon(btnDelete, Theme.IconDelete);
+
             RefreshDishes();
         }
 
@@ -44,6 +54,21 @@ namespace Muhammed.Forms
             }
 
             lblCount.Text = "Блюд в меню: " + DataService.Dishes.Count;
+        }
+
+        /// <summary>
+        /// Защита: менять меню может только администратор,
+        /// даже если окно откроют не из админ-панели.
+        /// </summary>
+        protected override void OnLoad(EventArgs e)
+        {
+            base.OnLoad(e);
+            if (!CurrentUser.IsAdmin)
+            {
+                MessageBox.Show("Изменять меню может только администратор.", "Нет доступа",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Close();
+            }
         }
 
         /// <summary>

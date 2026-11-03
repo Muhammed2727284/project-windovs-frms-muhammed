@@ -28,328 +28,214 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btnNewOrder = new System.Windows.Forms.Button();
-            this.btnOpenOrder = new System.Windows.Forms.Button();
-            this.btnDeleteOrder = new System.Windows.Forms.Button();
-            this.btnMenu = new System.Windows.Forms.Button();
-            this.btnReport = new System.Windows.Forms.Button();
-            this.grpFilter = new System.Windows.Forms.GroupBox();
-            this.lblFilter = new System.Windows.Forms.Label();
-            this.cmbFilter = new System.Windows.Forms.ComboBox();
-            this.lblSearchTable = new System.Windows.Forms.Label();
-            this.txtSearchTable = new System.Windows.Forms.TextBox();
-            this.btnSearch = new System.Windows.Forms.Button();
-            this.btnReset = new System.Windows.Forms.Button();
-            this.grpStatus = new System.Windows.Forms.GroupBox();
-            this.lblNewStatus = new System.Windows.Forms.Label();
-            this.cmbNewStatus = new System.Windows.Forms.ComboBox();
-            this.btnChangeStatus = new System.Windows.Forms.Button();
-            this.dgvOrders = new System.Windows.Forms.DataGridView();
-            this.colId = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTable = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTotal = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lblCount = new System.Windows.Forms.Label();
-            this.grpFilter.SuspendLayout();
-            this.grpStatus.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).BeginInit();
+            this.pnlSidebar = new System.Windows.Forms.Panel();
+            this.btnNavAdmin = new System.Windows.Forms.Button();
+            this.btnNavOrders = new System.Windows.Forms.Button();
+            this.btnNavNewOrder = new System.Windows.Forms.Button();
+            this.btnNavMenu = new System.Windows.Forms.Button();
+            this.lblLogo = new System.Windows.Forms.Label();
+            this.pnlTop = new System.Windows.Forms.Panel();
+            this.lblAvatar = new System.Windows.Forms.Label();
+            this.lblGreeting = new System.Windows.Forms.Label();
+            this.pnlTopLine = new System.Windows.Forms.Panel();
+            this.btnLogout = new System.Windows.Forms.Button();
+            this.lblUserRole = new System.Windows.Forms.Label();
+            this.lblUserName = new System.Windows.Forms.Label();
+            this.lblCafeName = new System.Windows.Forms.Label();
+            this.pnlContent = new System.Windows.Forms.Panel();
+            this.pnlSidebar.SuspendLayout();
+            this.pnlTop.SuspendLayout();
             this.SuspendLayout();
             //
-            // btnNewOrder
+            // pnlSidebar
             //
-            this.btnNewOrder.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-            this.btnNewOrder.Location = new System.Drawing.Point(12, 12);
-            this.btnNewOrder.Name = "btnNewOrder";
-            this.btnNewOrder.Size = new System.Drawing.Size(130, 34);
-            this.btnNewOrder.TabIndex = 0;
-            this.btnNewOrder.Text = "Новый заказ";
-            this.btnNewOrder.UseVisualStyleBackColor = true;
-            this.btnNewOrder.Click += new System.EventHandler(this.btnNewOrder_Click);
+            this.pnlSidebar.Controls.Add(this.btnNavAdmin);
+            this.pnlSidebar.Controls.Add(this.btnNavOrders);
+            this.pnlSidebar.Controls.Add(this.btnNavNewOrder);
+            this.pnlSidebar.Controls.Add(this.btnNavMenu);
+            this.pnlSidebar.Controls.Add(this.lblLogo);
+            this.pnlSidebar.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlSidebar.Location = new System.Drawing.Point(0, 0);
+            this.pnlSidebar.Name = "pnlSidebar";
+            this.pnlSidebar.Size = new System.Drawing.Size(220, 680);
+            this.pnlSidebar.TabIndex = 0;
             //
-            // btnOpenOrder
+            // btnNavAdmin
             //
-            this.btnOpenOrder.Location = new System.Drawing.Point(148, 12);
-            this.btnOpenOrder.Name = "btnOpenOrder";
-            this.btnOpenOrder.Size = new System.Drawing.Size(110, 34);
-            this.btnOpenOrder.TabIndex = 1;
-            this.btnOpenOrder.Text = "Открыть";
-            this.btnOpenOrder.UseVisualStyleBackColor = true;
-            this.btnOpenOrder.Click += new System.EventHandler(this.btnOpenOrder_Click);
+            this.btnNavAdmin.Location = new System.Drawing.Point(0, 256);
+            this.btnNavAdmin.Name = "btnNavAdmin";
+            this.btnNavAdmin.Size = new System.Drawing.Size(220, 50);
+            this.btnNavAdmin.TabIndex = 4;
+            this.btnNavAdmin.Text = "Админ-панель";
+            this.btnNavAdmin.UseVisualStyleBackColor = true;
+            this.btnNavAdmin.Click += new System.EventHandler(this.btnNavAdmin_Click);
             //
-            // btnDeleteOrder
+            // btnNavOrders
             //
-            this.btnDeleteOrder.Location = new System.Drawing.Point(264, 12);
-            this.btnDeleteOrder.Name = "btnDeleteOrder";
-            this.btnDeleteOrder.Size = new System.Drawing.Size(110, 34);
-            this.btnDeleteOrder.TabIndex = 2;
-            this.btnDeleteOrder.Text = "Удалить";
-            this.btnDeleteOrder.UseVisualStyleBackColor = true;
-            this.btnDeleteOrder.Click += new System.EventHandler(this.btnDeleteOrder_Click);
+            this.btnNavOrders.Location = new System.Drawing.Point(0, 206);
+            this.btnNavOrders.Name = "btnNavOrders";
+            this.btnNavOrders.Size = new System.Drawing.Size(220, 50);
+            this.btnNavOrders.TabIndex = 3;
+            this.btnNavOrders.Text = "Заказы";
+            this.btnNavOrders.UseVisualStyleBackColor = true;
+            this.btnNavOrders.Click += new System.EventHandler(this.btnNavOrders_Click);
             //
-            // btnMenu
+            // btnNavNewOrder
             //
-            this.btnMenu.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnMenu.Location = new System.Drawing.Point(662, 12);
-            this.btnMenu.Name = "btnMenu";
-            this.btnMenu.Size = new System.Drawing.Size(110, 34);
-            this.btnMenu.TabIndex = 3;
-            this.btnMenu.Text = "Меню";
-            this.btnMenu.UseVisualStyleBackColor = true;
-            this.btnMenu.Click += new System.EventHandler(this.btnMenu_Click);
+            this.btnNavNewOrder.Location = new System.Drawing.Point(0, 156);
+            this.btnNavNewOrder.Name = "btnNavNewOrder";
+            this.btnNavNewOrder.Size = new System.Drawing.Size(220, 50);
+            this.btnNavNewOrder.TabIndex = 2;
+            this.btnNavNewOrder.Text = "Новый заказ";
+            this.btnNavNewOrder.UseVisualStyleBackColor = true;
+            this.btnNavNewOrder.Click += new System.EventHandler(this.btnNavNewOrder_Click);
             //
-            // btnReport
+            // btnNavMenu
             //
-            this.btnReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnReport.Location = new System.Drawing.Point(778, 12);
-            this.btnReport.Name = "btnReport";
-            this.btnReport.Size = new System.Drawing.Size(110, 34);
-            this.btnReport.TabIndex = 4;
-            this.btnReport.Text = "Отчёт";
-            this.btnReport.UseVisualStyleBackColor = true;
-            this.btnReport.Click += new System.EventHandler(this.btnReport_Click);
+            this.btnNavMenu.Location = new System.Drawing.Point(0, 106);
+            this.btnNavMenu.Name = "btnNavMenu";
+            this.btnNavMenu.Size = new System.Drawing.Size(220, 50);
+            this.btnNavMenu.TabIndex = 1;
+            this.btnNavMenu.Text = "Меню кафе";
+            this.btnNavMenu.UseVisualStyleBackColor = true;
+            this.btnNavMenu.Click += new System.EventHandler(this.btnNavMenu_Click);
             //
-            // grpFilter
+            // lblLogo
             //
-            this.grpFilter.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpFilter.Controls.Add(this.lblFilter);
-            this.grpFilter.Controls.Add(this.cmbFilter);
-            this.grpFilter.Controls.Add(this.lblSearchTable);
-            this.grpFilter.Controls.Add(this.txtSearchTable);
-            this.grpFilter.Controls.Add(this.btnSearch);
-            this.grpFilter.Controls.Add(this.btnReset);
-            this.grpFilter.Location = new System.Drawing.Point(12, 56);
-            this.grpFilter.Name = "grpFilter";
-            this.grpFilter.Size = new System.Drawing.Size(876, 62);
-            this.grpFilter.TabIndex = 5;
-            this.grpFilter.TabStop = false;
-            this.grpFilter.Text = "Поиск и фильтр";
+            this.lblLogo.Location = new System.Drawing.Point(0, 0);
+            this.lblLogo.Name = "lblLogo";
+            this.lblLogo.Size = new System.Drawing.Size(220, 92);
+            this.lblLogo.TabIndex = 0;
+            this.lblLogo.Text = "Уют";
+            this.lblLogo.Paint += new System.Windows.Forms.PaintEventHandler(this.lblLogo_Paint);
             //
-            // lblFilter
+            // pnlTop
             //
-            this.lblFilter.AutoSize = true;
-            this.lblFilter.Location = new System.Drawing.Point(12, 28);
-            this.lblFilter.Name = "lblFilter";
-            this.lblFilter.Size = new System.Drawing.Size(46, 15);
-            this.lblFilter.TabIndex = 0;
-            this.lblFilter.Text = "Статус:";
+            this.pnlTop.Controls.Add(this.lblAvatar);
+            this.pnlTop.Controls.Add(this.lblGreeting);
+            this.pnlTop.Controls.Add(this.pnlTopLine);
+            this.pnlTop.Controls.Add(this.btnLogout);
+            this.pnlTop.Controls.Add(this.lblUserRole);
+            this.pnlTop.Controls.Add(this.lblUserName);
+            this.pnlTop.Controls.Add(this.lblCafeName);
+            this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlTop.Location = new System.Drawing.Point(220, 0);
+            this.pnlTop.Name = "pnlTop";
+            this.pnlTop.Size = new System.Drawing.Size(880, 72);
+            this.pnlTop.TabIndex = 1;
             //
-            // cmbFilter
+            // lblAvatar
             //
-            this.cmbFilter.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFilter.FormattingEnabled = true;
-            this.cmbFilter.Location = new System.Drawing.Point(64, 24);
-            this.cmbFilter.Name = "cmbFilter";
-            this.cmbFilter.Size = new System.Drawing.Size(130, 23);
-            this.cmbFilter.TabIndex = 1;
-            this.cmbFilter.SelectedIndexChanged += new System.EventHandler(this.cmbFilter_SelectedIndexChanged);
+            this.lblAvatar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAvatar.Location = new System.Drawing.Point(710, 14);
+            this.lblAvatar.Name = "lblAvatar";
+            this.lblAvatar.Size = new System.Drawing.Size(44, 44);
+            this.lblAvatar.TabIndex = 6;
+            this.lblAvatar.Paint += new System.Windows.Forms.PaintEventHandler(this.lblAvatar_Paint);
             //
-            // lblSearchTable
+            // lblGreeting
             //
-            this.lblSearchTable.AutoSize = true;
-            this.lblSearchTable.Location = new System.Drawing.Point(214, 28);
-            this.lblSearchTable.Name = "lblSearchTable";
-            this.lblSearchTable.Size = new System.Drawing.Size(80, 15);
-            this.lblSearchTable.TabIndex = 2;
-            this.lblSearchTable.Text = "Номер стола:";
+            this.lblGreeting.AutoSize = true;
+            this.lblGreeting.Location = new System.Drawing.Point(22, 42);
+            this.lblGreeting.Name = "lblGreeting";
+            this.lblGreeting.Size = new System.Drawing.Size(83, 15);
+            this.lblGreeting.TabIndex = 5;
+            this.lblGreeting.Text = "Добрый день!";
             //
-            // txtSearchTable
+            // pnlTopLine
             //
-            this.txtSearchTable.Location = new System.Drawing.Point(300, 24);
-            this.txtSearchTable.MaxLength = 5;
-            this.txtSearchTable.Name = "txtSearchTable";
-            this.txtSearchTable.Size = new System.Drawing.Size(70, 23);
-            this.txtSearchTable.TabIndex = 3;
+            this.pnlTopLine.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlTopLine.Location = new System.Drawing.Point(0, 71);
+            this.pnlTopLine.Name = "pnlTopLine";
+            this.pnlTopLine.Size = new System.Drawing.Size(880, 1);
+            this.pnlTopLine.TabIndex = 4;
             //
-            // btnSearch
+            // btnLogout
             //
-            this.btnSearch.Location = new System.Drawing.Point(382, 21);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(90, 29);
-            this.btnSearch.TabIndex = 4;
-            this.btnSearch.Text = "Найти";
-            this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.btnLogout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnLogout.Location = new System.Drawing.Point(766, 19);
+            this.btnLogout.Name = "btnLogout";
+            this.btnLogout.Size = new System.Drawing.Size(96, 34);
+            this.btnLogout.TabIndex = 3;
+            this.btnLogout.Text = "Выйти";
+            this.btnLogout.UseVisualStyleBackColor = true;
+            this.btnLogout.Click += new System.EventHandler(this.btnLogout_Click);
             //
-            // btnReset
+            // lblUserRole
             //
-            this.btnReset.Location = new System.Drawing.Point(478, 21);
-            this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(90, 29);
-            this.btnReset.TabIndex = 5;
-            this.btnReset.Text = "Сбросить";
-            this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.lblUserRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblUserRole.Location = new System.Drawing.Point(380, 37);
+            this.lblUserRole.Name = "lblUserRole";
+            this.lblUserRole.Size = new System.Drawing.Size(320, 18);
+            this.lblUserRole.TabIndex = 2;
+            this.lblUserRole.Text = "Роль";
+            this.lblUserRole.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             //
-            // grpStatus
+            // lblUserName
             //
-            this.grpStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.grpStatus.Controls.Add(this.lblNewStatus);
-            this.grpStatus.Controls.Add(this.cmbNewStatus);
-            this.grpStatus.Controls.Add(this.btnChangeStatus);
-            this.grpStatus.Location = new System.Drawing.Point(12, 124);
-            this.grpStatus.Name = "grpStatus";
-            this.grpStatus.Size = new System.Drawing.Size(876, 62);
-            this.grpStatus.TabIndex = 6;
-            this.grpStatus.TabStop = false;
-            this.grpStatus.Text = "Статус выбранного заказа";
+            this.lblUserName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblUserName.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Bold);
+            this.lblUserName.Location = new System.Drawing.Point(380, 17);
+            this.lblUserName.Name = "lblUserName";
+            this.lblUserName.Size = new System.Drawing.Size(320, 20);
+            this.lblUserName.TabIndex = 1;
+            this.lblUserName.Text = "ФИО пользователя";
+            this.lblUserName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             //
-            // lblNewStatus
+            // lblCafeName
             //
-            this.lblNewStatus.AutoSize = true;
-            this.lblNewStatus.Location = new System.Drawing.Point(12, 28);
-            this.lblNewStatus.Name = "lblNewStatus";
-            this.lblNewStatus.Size = new System.Drawing.Size(81, 15);
-            this.lblNewStatus.TabIndex = 0;
-            this.lblNewStatus.Text = "Новый статус:";
+            this.lblCafeName.AutoSize = true;
+            this.lblCafeName.Font = new System.Drawing.Font("Segoe UI", 13F, System.Drawing.FontStyle.Bold);
+            this.lblCafeName.Location = new System.Drawing.Point(18, 12);
+            this.lblCafeName.Name = "lblCafeName";
+            this.lblCafeName.Size = new System.Drawing.Size(138, 25);
+            this.lblCafeName.TabIndex = 0;
+            this.lblCafeName.Text = "Кофейня «Уют»";
             //
-            // cmbNewStatus
+            // pnlContent
             //
-            this.cmbNewStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbNewStatus.FormattingEnabled = true;
-            this.cmbNewStatus.Location = new System.Drawing.Point(100, 24);
-            this.cmbNewStatus.Name = "cmbNewStatus";
-            this.cmbNewStatus.Size = new System.Drawing.Size(130, 23);
-            this.cmbNewStatus.TabIndex = 1;
-            //
-            // btnChangeStatus
-            //
-            this.btnChangeStatus.Location = new System.Drawing.Point(242, 21);
-            this.btnChangeStatus.Name = "btnChangeStatus";
-            this.btnChangeStatus.Size = new System.Drawing.Size(140, 29);
-            this.btnChangeStatus.TabIndex = 2;
-            this.btnChangeStatus.Text = "Изменить статус";
-            this.btnChangeStatus.UseVisualStyleBackColor = true;
-            this.btnChangeStatus.Click += new System.EventHandler(this.btnChangeStatus_Click);
-            //
-            // dgvOrders
-            //
-            this.dgvOrders.AllowUserToAddRows = false;
-            this.dgvOrders.AllowUserToDeleteRows = false;
-            this.dgvOrders.AllowUserToResizeRows = false;
-            this.dgvOrders.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dgvOrders.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.dgvOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvOrders.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colId,
-            this.colDate,
-            this.colTable,
-            this.colStatus,
-            this.colTotal});
-            this.dgvOrders.Location = new System.Drawing.Point(12, 196);
-            this.dgvOrders.MultiSelect = false;
-            this.dgvOrders.Name = "dgvOrders";
-            this.dgvOrders.ReadOnly = true;
-            this.dgvOrders.RowHeadersVisible = false;
-            this.dgvOrders.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvOrders.Size = new System.Drawing.Size(876, 340);
-            this.dgvOrders.TabIndex = 7;
-            this.dgvOrders.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOrders_CellDoubleClick);
-            this.dgvOrders.SelectionChanged += new System.EventHandler(this.dgvOrders_SelectionChanged);
-            //
-            // colId
-            //
-            this.colId.HeaderText = "№ заказа";
-            this.colId.Name = "colId";
-            this.colId.ReadOnly = true;
-            this.colId.Width = 90;
-            //
-            // colDate
-            //
-            this.colDate.HeaderText = "Дата и время";
-            this.colDate.Name = "colDate";
-            this.colDate.ReadOnly = true;
-            this.colDate.Width = 150;
-            //
-            // colTable
-            //
-            this.colTable.HeaderText = "Стол";
-            this.colTable.Name = "colTable";
-            this.colTable.ReadOnly = true;
-            this.colTable.Width = 80;
-            //
-            // colStatus
-            //
-            this.colStatus.HeaderText = "Статус";
-            this.colStatus.Name = "colStatus";
-            this.colStatus.ReadOnly = true;
-            this.colStatus.Width = 120;
-            //
-            // colTotal
-            //
-            this.colTotal.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.colTotal.HeaderText = "Сумма, ₽";
-            this.colTotal.Name = "colTotal";
-            this.colTotal.ReadOnly = true;
-            //
-            // lblCount
-            //
-            this.lblCount.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblCount.AutoSize = true;
-            this.lblCount.Location = new System.Drawing.Point(12, 546);
-            this.lblCount.Name = "lblCount";
-            this.lblCount.Size = new System.Drawing.Size(116, 15);
-            this.lblCount.TabIndex = 8;
-            this.lblCount.Text = "Показано заказов: 0";
+            this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlContent.Location = new System.Drawing.Point(220, 72);
+            this.pnlContent.Name = "pnlContent";
+            this.pnlContent.Size = new System.Drawing.Size(880, 608);
+            this.pnlContent.TabIndex = 2;
             //
             // MainForm
             //
-            this.AcceptButton = this.btnSearch;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(900, 570);
-            this.Controls.Add(this.lblCount);
-            this.Controls.Add(this.dgvOrders);
-            this.Controls.Add(this.grpStatus);
-            this.Controls.Add(this.grpFilter);
-            this.Controls.Add(this.btnReport);
-            this.Controls.Add(this.btnMenu);
-            this.Controls.Add(this.btnDeleteOrder);
-            this.Controls.Add(this.btnOpenOrder);
-            this.Controls.Add(this.btnNewOrder);
+            this.ClientSize = new System.Drawing.Size(1100, 680);
+            this.Controls.Add(this.pnlContent);
+            this.Controls.Add(this.pnlTop);
+            this.Controls.Add(this.pnlSidebar);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.MinimumSize = new System.Drawing.Size(820, 450);
+            this.MinimumSize = new System.Drawing.Size(1020, 640);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Учёт заказов кафе";
-            this.grpFilter.ResumeLayout(false);
-            this.grpFilter.PerformLayout();
-            this.grpStatus.ResumeLayout(false);
-            this.grpStatus.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvOrders)).EndInit();
+            this.pnlSidebar.ResumeLayout(false);
+            this.pnlTop.ResumeLayout(false);
+            this.pnlTop.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button btnNewOrder;
-        private System.Windows.Forms.Button btnOpenOrder;
-        private System.Windows.Forms.Button btnDeleteOrder;
-        private System.Windows.Forms.Button btnMenu;
-        private System.Windows.Forms.Button btnReport;
-        private System.Windows.Forms.GroupBox grpFilter;
-        private System.Windows.Forms.Label lblFilter;
-        private System.Windows.Forms.ComboBox cmbFilter;
-        private System.Windows.Forms.Label lblSearchTable;
-        private System.Windows.Forms.TextBox txtSearchTable;
-        private System.Windows.Forms.Button btnSearch;
-        private System.Windows.Forms.Button btnReset;
-        private System.Windows.Forms.GroupBox grpStatus;
-        private System.Windows.Forms.Label lblNewStatus;
-        private System.Windows.Forms.ComboBox cmbNewStatus;
-        private System.Windows.Forms.Button btnChangeStatus;
-        private System.Windows.Forms.DataGridView dgvOrders;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colId;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colDate;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTable;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colStatus;
-        private System.Windows.Forms.DataGridViewTextBoxColumn colTotal;
-        private System.Windows.Forms.Label lblCount;
+        private System.Windows.Forms.Panel pnlSidebar;
+        private System.Windows.Forms.Button btnNavAdmin;
+        private System.Windows.Forms.Button btnNavOrders;
+        private System.Windows.Forms.Button btnNavNewOrder;
+        private System.Windows.Forms.Button btnNavMenu;
+        private System.Windows.Forms.Label lblLogo;
+        private System.Windows.Forms.Panel pnlTop;
+        private System.Windows.Forms.Label lblAvatar;
+        private System.Windows.Forms.Label lblGreeting;
+        private System.Windows.Forms.Panel pnlTopLine;
+        private System.Windows.Forms.Button btnLogout;
+        private System.Windows.Forms.Label lblUserRole;
+        private System.Windows.Forms.Label lblUserName;
+        private System.Windows.Forms.Label lblCafeName;
+        private System.Windows.Forms.Panel pnlContent;
     }
 }

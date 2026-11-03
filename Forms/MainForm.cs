@@ -1,276 +1,212 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using Muhammed.Models;
 using Muhammed.Services;
+using Muhammed.UI;
 
 namespace Muhammed.Forms
 {
     /// <summary>
-    /// Главное окно: таблица заказов, фильтр, поиск, смена статуса
-    /// и кнопки перехода к меню и отчёту.
+    /// Главное окно после входа — «рамка» программы:
+    /// вверху название кафе, ФИО и роль пользователя и кнопка «Выйти»,
+    /// слева боковое меню, справа область содержимого.
+    /// В область содержимого по нажатию пункта меню кладётся страница (UserControl):
+    /// OrdersPage, MenuViewPage или AdminPage.
     /// </summary>
     public partial class MainForm : Form
     {
-        /// <summary>Текст пункта «все статусы» в фильтре.</summary>
-        private const string AllStatuses = "Все";
-
         /// <summary>
-        /// Флаг «сейчас идёт заполнение формы».
-        /// Пока он true, обработчики событий не обновляют таблицу лишний раз.
+        /// true, если окно закрыто кнопкой «Выйти» (тогда Program.cs снова покажет окно входа).
+        /// false, если окно закрыли крестиком (тогда программа завершается).
         /// </summary>
-        private bool isLoading = true;
+        public bool LogoutRequested { get; private set; }
+
+        /// <summary>Все пункты бокового меню — чтобы подсвечивать активный.</summary>
+        private Button[] navButtons;
 
         public MainForm()
         {
             InitializeComponent();
 
-            // Фильтр: «Все» + все статусы
-            cmbFilter.Items.Add(AllStatuses);
-            // Список «Новый статус»: все статусы
-            foreach (OrderStatus status in Enum.GetValues(typeof(OrderStatus)))
-            {
-                cmbFilter.Items.Add(status);
-                cmbNewStatus.Items.Add(status);
-            }
-            cmbFilter.SelectedIndex = 0;
-            cmbNewStatus.SelectedIndex = 0;
+            // Единое оформление: цвета и шрифты берутся из класса Theme
+            Theme.ApplyToForm(this);
+            pnlSidebar.BackColor = Theme.Sidebar;
+            pnlTop.BackColor = Theme.Surface;
+            pnlTopLine.BackColor = Theme.Line;
+            lblCafeName.ForeColor = Theme.Text;
+            lblCafeName.Text = Theme.CafeName;
+            Theme.StyleMuted(lblUserRole);
+            Theme.StyleMuted(lblGreeting);
+            Theme.SetIcon(btnLogout, Theme.IconLogout);
 
-            isLoading = false;
-            RefreshOrders();
+            // Пункты бокового меню: «таблетки» с иконками
+            Theme.StyleSidebarButton(btnNavMenu, Theme.IconMenu);
+            Theme.StyleSidebarButton(btnNavNewOrder, Theme.IconAdd);
+            Theme.StyleSidebarButton(btnNavOrders, Theme.IconOrders);
+            Theme.StyleSidebarButton(btnNavAdmin, Theme.IconSettings);
+            navButtons = new Button[] { btnNavMenu, btnNavNewOrder, btnNavOrders, btnNavAdmin };
+
+            // Кто вошёл: ФИО и роль в правом верхнем углу, приветствие под названием кафе
+            lblUserName.Text = CurrentUser.User.FullName;
+            lblUserRole.Text = CurrentUser.User.Role.ToString();
+            lblGreeting.Text = GetGreeting() + ", " + GetFirstName(CurrentUser.User.FullName) + "!";
+            Text = Theme.CafeName + " — учёт заказов";
+
+            // Админ-панель видна только администратору
+            btnNavAdmin.Visible = CurrentUser.IsAdmin;
+
+            // По умолчанию открываем страницу «Заказы»
+            ShowOrdersPage();
+        }
+
+        /// <summary>Приветствие по времени суток.</summary>
+        private static string GetGreeting()
+        {
+            int hour = DateTime.Now.Hour;
+            if (hour >= 5 && hour < 12)
+            {
+                return "Доброе утро";
+            }
+            if (hour >= 12 && hour < 18)
+            {
+                return "Добрый день";
+            }
+            if (hour >= 18 && hour < 23)
+            {
+                return "Добрый вечер";
+            }
+            return "Доброй ночи";
         }
 
         /// <summary>
-        /// Заново заполняет таблицу заказов с учётом фильтра и поиска.
+        /// Имя для приветствия из ФИО «Фамилия Имя Отчество» — второе слово.
+        /// Если слово одно — возвращает его.
         /// </summary>
-        /// <param name="selectId">Номер заказа, который нужно выделить после обновления (0 — первый).</param>
-        private void RefreshOrders(int selectId = 0)
+        private static string GetFirstName(string fullName)
         {
-            // 1. Читаем фильтр по статусу
-            OrderStatus? status = null;
-            if (cmbFilter.SelectedItem is OrderStatus)
+            string[] words = fullName.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length >= 2)
             {
-                status = (OrderStatus)cmbFilter.SelectedItem;
+                return words[1];
             }
-
-            // 2. Читаем номер стола для поиска (пустое поле — все столы)
-            int? table = null;
-            string tableText = txtSearchTable.Text.Trim();
-            if (tableText != "")
-            {
-                int number;
-                if (!int.TryParse(tableText, out number) || number < 1)
-                {
-                    MessageBox.Show("Номер стола должен быть числом больше 0.", "Поиск",
-                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtSearchTable.Focus();
-                    txtSearchTable.SelectAll();
-                    return;
-                }
-                table = number;
-            }
-
-            // 3. Получаем подходящие заказы и выводим их в таблицу
-            List<Order> orders = OrderService.Filter(DataService.Orders, status, table);
-
-            dgvOrders.Rows.Clear();
-            foreach (Order order in orders)
-            {
-                int rowIndex = dgvOrders.Rows.Add(
-                    order.Id,
-                    order.CreatedAt.ToString("dd.MM.yyyy HH:mm"),
-                    order.TableNumber,
-                    order.Status.ToString(),
-                    order.Total.ToString("N2"));
-
-                if (order.Id == selectId)
-                {
-                    dgvOrders.CurrentCell = dgvOrders.Rows[rowIndex].Cells[colId.Index];
-                }
-            }
-
-            lblCount.Text = "Показано заказов: " + orders.Count + " из " + DataService.Orders.Count;
+            return words.Length == 1 ? words[0] : "";
         }
 
         /// <summary>
-        /// Возвращает заказ из выделенной строки.
-        /// Если ничего не выделено — показывает сообщение и возвращает null.
+        /// Рисует логотип в боковом меню: карамельный квадрат с чашкой,
+        /// название кафе и подпись «учёт заказов».
         /// </summary>
-        private Order GetSelectedOrder()
+        private void lblLogo_Paint(object sender, PaintEventArgs e)
         {
-            if (dgvOrders.CurrentRow == null)
+            Graphics g = e.Graphics;
+            g.Clear(Theme.Sidebar);
+
+            Rectangle badge = new Rectangle(20, (lblLogo.Height - 44) / 2, 44, 44);
+            Theme.FillRounded(g, badge, 12, Theme.Accent);
+            using (Font cupFont = new Font("Segoe UI Symbol", 17F))
             {
-                MessageBox.Show("Выберите заказ в таблице.", "Заказы",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return null;
+                // ☕ — символ «горячий напиток» (чашка)
+                TextRenderer.DrawText(g, "☕", cupFont, badge, Color.White,
+                    TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPadding);
             }
 
-            int id = Convert.ToInt32(dgvOrders.CurrentRow.Cells[colId.Index].Value);
-            return DataService.FindOrder(id);
-        }
-
-        // ===== Кнопки верхней панели =====
-
-        /// <summary>«Новый заказ»: открывает пустую форму заказа.</summary>
-        private void btnNewOrder_Click(object sender, EventArgs e)
-        {
-            if (DataService.Dishes.Count == 0)
+            using (Font nameFont = new Font("Segoe UI", 15F, FontStyle.Bold))
             {
-                MessageBox.Show("Меню пустое. Сначала добавьте блюда (кнопка «Меню»).", "Новый заказ",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                TextRenderer.DrawText(g, Theme.CafeShortName, nameFont,
+                    new Point(badge.Right + 10, badge.Y - 4), Color.White);
             }
-
-            using (OrderForm form = new OrderForm(null))
-            {
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    RefreshOrders(DataService.NextOrderId() - 1); // выделяем только что созданный заказ
-                }
-            }
+            TextRenderer.DrawText(g, "учёт заказов", Theme.Regular,
+                new Point(badge.Right + 12, badge.Y + 25), Theme.SidebarMuted);
         }
 
-        /// <summary>«Открыть»: открывает выбранный заказ для изменения.</summary>
-        private void btnOpenOrder_Click(object sender, EventArgs e)
+        /// <summary>Рисует круглый аватар с инициалами вошедшего пользователя.</summary>
+        private void lblAvatar_Paint(object sender, PaintEventArgs e)
         {
-            OpenSelectedOrder();
+            e.Graphics.Clear(Theme.Surface);
+            Rectangle circle = new Rectangle(1, 1, lblAvatar.Width - 3, lblAvatar.Height - 3);
+            string name = CurrentUser.User != null ? CurrentUser.User.FullName : "";
+            Theme.DrawAvatar(e.Graphics, circle, name);
         }
-
-        /// <summary>Двойной клик по строке — то же самое, что «Открыть».</summary>
-        private void dgvOrders_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex >= 0) // -1 — это клик по заголовку столбца
-            {
-                OpenSelectedOrder();
-            }
-        }
-
-        /// <summary>Открывает форму заказа для выделенной строки.</summary>
-        private void OpenSelectedOrder()
-        {
-            Order order = GetSelectedOrder();
-            if (order == null)
-            {
-                return;
-            }
-
-            using (OrderForm form = new OrderForm(order))
-            {
-                if (form.ShowDialog(this) == DialogResult.OK)
-                {
-                    RefreshOrders(order.Id);
-                }
-            }
-        }
-
-        /// <summary>«Удалить»: удаляет выбранный заказ после подтверждения.</summary>
-        private void btnDeleteOrder_Click(object sender, EventArgs e)
-        {
-            Order order = GetSelectedOrder();
-            if (order == null)
-            {
-                return;
-            }
-
-            DialogResult answer = MessageBox.Show(
-                "Удалить заказ №" + order.Id + " (стол " + order.TableNumber + ")?",
-                "Удаление заказа",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question);
-
-            if (answer == DialogResult.Yes)
-            {
-                DataService.Orders.Remove(order);
-                DataService.SaveOrders();
-                RefreshOrders();
-            }
-        }
-
-        /// <summary>«Меню»: открывает окно меню кафе.</summary>
-        private void btnMenu_Click(object sender, EventArgs e)
-        {
-            using (MenuForm form = new MenuForm())
-            {
-                form.ShowDialog(this);
-            }
-        }
-
-        /// <summary>«Отчёт»: открывает отчёт за день.</summary>
-        private void btnReport_Click(object sender, EventArgs e)
-        {
-            using (ReportForm form = new ReportForm())
-            {
-                form.ShowDialog(this);
-            }
-        }
-
-        // ===== Поиск и фильтр =====
-
-        /// <summary>Смена фильтра по статусу — сразу обновляем таблицу.</summary>
-        private void cmbFilter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!isLoading)
-            {
-                RefreshOrders();
-            }
-        }
-
-        /// <summary>«Найти» (или Enter): применяем поиск по столу.</summary>
-        private void btnSearch_Click(object sender, EventArgs e)
-        {
-            RefreshOrders();
-        }
-
-        /// <summary>«Сбросить»: очищаем фильтр и поиск, показываем все заказы.</summary>
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-            isLoading = true; // чтобы смена фильтра не обновляла таблицу дважды
-            cmbFilter.SelectedIndex = 0;
-            txtSearchTable.Text = "";
-            isLoading = false;
-            RefreshOrders();
-        }
-
-        // ===== Статус заказа =====
 
         /// <summary>
-        /// При выборе другой строки показываем её текущий статус в списке «Новый статус».
+        /// Показывает страницу в области содержимого и подсвечивает пункт меню.
+        /// Старая страница удаляется, поэтому каждая страница при открытии
+        /// показывает свежие данные.
         /// </summary>
-        private void dgvOrders_SelectionChanged(object sender, EventArgs e)
+        private void ShowPage(UserControl page, Button navButton)
         {
-            if (dgvOrders.CurrentRow == null)
+            // Удаляем и освобождаем старую страницу
+            while (pnlContent.Controls.Count > 0)
             {
-                return;
+                Control old = pnlContent.Controls[0];
+                pnlContent.Controls.Remove(old);
+                old.Dispose();
             }
 
-            int id = Convert.ToInt32(dgvOrders.CurrentRow.Cells[colId.Index].Value);
-            Order order = DataService.FindOrder(id);
-            if (order != null)
-            {
-                cmbNewStatus.SelectedItem = order.Status;
-            }
+            page.Dock = DockStyle.Fill;
+            pnlContent.Controls.Add(page);
+
+            Theme.SetActiveSidebarButton(navButtons, navButton);
         }
 
-        /// <summary>«Изменить статус»: ставит выбранному заказу новый статус.</summary>
-        private void btnChangeStatus_Click(object sender, EventArgs e)
+        /// <summary>Открывает страницу «Заказы» и возвращает её.</summary>
+        private OrdersPage ShowOrdersPage()
         {
-            Order order = GetSelectedOrder();
-            if (order == null)
+            OrdersPage page = new OrdersPage();
+            ShowPage(page, btnNavOrders);
+            return page;
+        }
+
+        // ===== Пункты бокового меню =====
+
+        /// <summary>«Меню кафе»: просмотр блюд (доступно всем).</summary>
+        private void btnNavMenu_Click(object sender, EventArgs e)
+        {
+            ShowPage(new MenuViewPage(), btnNavMenu);
+        }
+
+        /// <summary>
+        /// «Новый заказ»: открывает страницу «Заказы» и сразу окно нового заказа.
+        /// После сохранения новый заказ будет выделен в таблице.
+        /// </summary>
+        private void btnNavNewOrder_Click(object sender, EventArgs e)
+        {
+            OrdersPage page = ShowOrdersPage();
+            page.NewOrder();
+        }
+
+        /// <summary>«Заказы»: таблица заказов.</summary>
+        private void btnNavOrders_Click(object sender, EventArgs e)
+        {
+            ShowOrdersPage();
+        }
+
+        /// <summary>«Админ-панель»: только для администратора.</summary>
+        private void btnNavAdmin_Click(object sender, EventArgs e)
+        {
+            // Пункт у сотрудника скрыт, но проверяем права ещё раз — на всякий случай
+            if (!CurrentUser.IsAdmin)
+            {
+                return;
+            }
+            ShowPage(new AdminPage(), btnNavAdmin);
+        }
+
+        // ===== Выход =====
+
+        /// <summary>«Выйти»: завершает сеанс и возвращает к окну входа.</summary>
+        private void btnLogout_Click(object sender, EventArgs e)
+        {
+            DialogResult answer = MessageBox.Show("Выйти из учётной записи?", "Выход",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (answer != DialogResult.Yes)
             {
                 return;
             }
 
-            OrderStatus newStatus = (OrderStatus)cmbNewStatus.SelectedItem;
-            if (order.Status == newStatus)
-            {
-                MessageBox.Show("У заказа №" + order.Id + " уже статус «" + newStatus + "».", "Статус",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            order.Status = newStatus;
-            DataService.SaveOrders();
-            RefreshOrders(order.Id);
+            CurrentUser.SignOut();
+            LogoutRequested = true;
+            Close();
         }
     }
 }

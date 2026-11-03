@@ -20,6 +20,9 @@ namespace Muhammed.Services
         /// <summary>Список всех заказов.</summary>
         public static List<Order> Orders = new List<Order>();
 
+        /// <summary>Список пользователей программы.</summary>
+        public static List<User> Users = new List<User>();
+
         /// <summary>Папка с файлами данных: «Data» рядом с exe (bin\Debug\Data).</summary>
         private static string DataFolder
         {
@@ -38,9 +41,16 @@ namespace Muhammed.Services
             get { return Path.Combine(DataFolder, "orders.xml"); }
         }
 
+        /// <summary>Полный путь к файлу пользователей.</summary>
+        private static string UsersFile
+        {
+            get { return Path.Combine(DataFolder, "users.xml"); }
+        }
+
         /// <summary>
-        /// Загружает меню и заказы из файлов. Вызывается один раз при запуске программы.
+        /// Загружает меню, заказы и пользователей из файлов. Вызывается один раз при запуске программы.
         /// Если файла меню ещё нет (первый запуск), создаётся стартовое меню.
+        /// (Первого администратора создаёт AuthService.EnsureDefaultAdmin().)
         /// </summary>
         public static void Load()
         {
@@ -55,6 +65,43 @@ namespace Muhammed.Services
             }
 
             Orders = LoadList<Order>(OrdersFile);
+            Users = LoadList<User>(UsersFile);
+        }
+
+        /// <summary>Сохраняет пользователей в файл users.xml.</summary>
+        public static void SaveUsers()
+        {
+            SaveList(UsersFile, Users);
+        }
+
+        /// <summary>Возвращает номер для нового пользователя: самый большой номер + 1.</summary>
+        public static int NextUserId()
+        {
+            int maxId = 0;
+            foreach (User user in Users)
+            {
+                if (user.Id > maxId)
+                {
+                    maxId = user.Id;
+                }
+            }
+            return maxId + 1;
+        }
+
+        /// <summary>
+        /// Ищет пользователя по логину без учёта регистра букв («Admin» = «admin»).
+        /// Если не найден — возвращает null.
+        /// </summary>
+        public static User FindUserByLogin(string login)
+        {
+            foreach (User user in Users)
+            {
+                if (string.Equals(user.Login, login, StringComparison.OrdinalIgnoreCase))
+                {
+                    return user;
+                }
+            }
+            return null;
         }
 
         /// <summary>Сохраняет меню в файл menu.xml.</summary>
@@ -125,7 +172,7 @@ namespace Muhammed.Services
 
         /// <summary>
         /// Читает список объектов типа T из XML-файла.
-        /// T — это Dish или Order (обобщённый метод, чтобы не писать код дважды).
+        /// T — это Dish, Order или User (обобщённый метод, чтобы не писать код дважды).
         /// Если файла нет — возвращает пустой список.
         /// Если файл повреждён — делает его копию *.bad, сообщает об ошибке
         /// и возвращает пустой список (программа не падает).
